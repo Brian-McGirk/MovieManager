@@ -1,0 +1,27 @@
+﻿@model MovieManager.ViewModels.LoginUserViewModel
+
+@section Styles {
+    <link href="@Url.Content("~/css/loginPage.css")" rel="stylesheet" type="text/css" />
+}
+
+<div class="container">
+    <div class="row">
+        <form asp-controller="User" asp-action="Login" method="post" class="col-xs-12 col-sm-12 col-md-12">
+            <h2>Please fill out all fields</h2>
+            <div class="form-group">
+                <input class="form-control" placeholder="Enter Username *" asp-for="UserName" required>
+                <span class="error">@ViewBag.nameError</span>
+                <span asp-validation-for="UserName"></span>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Enter Password *" asp-for="Password" required>
+                <span class="error">@ViewBag.passwordError</span>
+                <span asp-validation-for="Password"></span>
+            </div>
+            <div class="checkbox">
+                <label><input type="checkbox" name="remember"> <span>Remember me</span></label>
+            </div>
+            <button type="submit" class="btn btn-success">Login <i class="glyphicon glyphicon-send"></i></button>
+        </form>
+    </div>
+</div>

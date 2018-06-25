@@ -1,0 +1,18 @@
+﻿body {
+    padding-top: 54px;
+}
+
+.card-img-top{
+    width: 250px;
+    height: 150px;
+}
+
+@media (min-width: 992px) {
+    body {
+        padding-top: 56px;
+    }
+}
+
+.card {
+    height: 100%;
+}
