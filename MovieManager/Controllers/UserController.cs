@@ -43,33 +43,49 @@ namespace MovieManager.Controllers
             List<string> href = new List<string>();
             List<string> title = new List<string>();
             List<string> description = new List<string>();
+            List<string> link = new List<string>();
+            List<string> releaseDate = new List<string>();
 
             //Extract the link to the image and put it in a list
             foreach (var img in imgs)
             {
                 href.Add(img.Attributes["src"].Value);
             }
-
+             
             //Get the first 4 tags with titles
             HtmlNode[] titles = doc.DocumentNode.SelectNodes("//div[@class='new-movies-items']/section[@class='movie'][position()<5]/div[@class='movie-description']/h2/a").ToArray();
 
-            //Extract the title names and add it to a list
+            //Extract the title names and links and add it to a list
             foreach (var t in titles)
             {
                 title.Add(t.InnerText);
+                link.Add(t.Attributes["href"].Value);
             }
 
-
+            // Get the first 4 descriptions
             HtmlNode[] descriptions = doc.DocumentNode.SelectNodes("//div[@class='new-movies-items']/section[@class='movie'][position()<5]/div[@class='movie-description']/div[@class='movie-synopsis']/p").ToArray();
 
+            //Extract the description and add it to a list
             foreach (var d in descriptions)
             {
                 description.Add(d.InnerText);
             }
 
+            //Get the first 4 release dates
+            HtmlNode[] releaseDates = doc.DocumentNode.SelectNodes("//div[@class='new-movies-items']/section[@class='movie'][position()<5]/div[@class='movie-description']/div[@class='movie-info']/ul/li[@class='movie-release-date']/time").ToArray();
+
+            //Extract the date and add it to a list
+            foreach (var rd in releaseDates)
+            {
+                releaseDate.Add(rd.InnerText);
+            }
+
+
             ViewBag.href = href;
             ViewBag.title = title;
             ViewBag.description = description;
+            ViewBag.link = link;
+            ViewBag.releaseDate = releaseDate;
 
             return View();
         }
