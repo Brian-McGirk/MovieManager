@@ -11,6 +11,7 @@ namespace MovieManager.Data
     {
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Media> Medias { get; set; }
 
         public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
         {

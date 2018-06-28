@@ -23,5 +23,14 @@
 <ItemGroup>
   <Folder Include="Migrations\" />
 </ItemGroup>
+  
+<ItemGroup>
+  <Reference Include="System.Web">
+    <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.Web.dll</HintPath>
+  </Reference>
+  <Reference Include="System.Web.HttpUtility">
+    <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.Web.HttpUtility.dll</HintPath>
+  </Reference>
+</ItemGroup>
 
 </Project>

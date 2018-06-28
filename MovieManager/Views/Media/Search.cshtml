@@ -1,0 +1,20 @@
+﻿@section Styles {
+    <link href="@Url.Content("~/css/searchPage.css")" rel="stylesheet" type="text/css" />
+}
+
+<br />
+
+@foreach(var searchResult in @ViewBag.filteredSearchResults)
+{
+     
+<form method="post" asp-controller="Media" asp-action="AddTvSeries">
+    <p>
+        @searchResult
+
+        
+        <input class="addButton" type="submit" value="Add" />
+    </p>
+</form>
+    
+
+}

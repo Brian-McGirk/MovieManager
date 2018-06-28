@@ -1,0 +1,76 @@
+﻿@model IList<MovieManager.Models.Media>
+
+@section Styles {
+    <link href="@Url.Content("~/css/mediaIndexPage.css")" rel="stylesheet" type="text/css" />
+}
+
+
+<br />
+
+@foreach(var s in @ViewBag.testing)
+{
+    <p>@s</p>
+
+}
+
+
+<!-- content -->
+<div class="content">
+    <div class="container">
+        <!-- content-left -->
+        <div class="col-md-8 content-left">
+            <div class="artical">
+                <div class="col-md-4 artical-left">
+                    <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
+                </div>
+                <div class="col-md-8 artical-right">
+                    <div class="artical-head">
+                        <h2><a href="#">Lorem ipsum</a></h2>
+                        <a href="#"><span class="rate"> </span></a>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="clearfix"> </div>
+                    <!-- artical-info -->
+                    <div class="artical-info">
+                        <p><strong>Release Date:</strong>  March 20, 2014,</p>
+                        <p><strong>Reched:</strong>$250 million</p>
+                        <p><strong>Genre:</strong>pop</p>
+                        <p><strong>Country:</strong>UK</p>
+                        <p><strong>singer:</strong> adipiscing</p>
+                        <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
+                    </div>
+                    <!-- artical-info -->
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        </div>
+
+        @*<div class="col-md-8 content-left">
+                <div onclick="location.href='details.html';" class="artical">
+                    <div class="col-md-4 artical-left">
+                        <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
+                    </div>
+                    <div class="col-md-8 artical-right">
+                        <div class="artical-head">
+                            <h2><a href="#">Lorem ipsum</a></h2>
+                            <a href="#"><span class="rate"> </span></a>
+                            <div class="clearfix"> </div>
+                        </div>
+                        <div class="clearfix"> </div>
+                        <!-- artical-info -->
+                        <div class="artical-info">
+                            <p><strong>Release Date:</strong>  March 20, 2014,</p>
+                            <p><strong>Reched:</strong>$250 million</p>
+                            <p><strong>Genre:</strong>pop</p>
+                            <p><strong>Country:</strong>UK</p>
+                            <p><strong>singer:</strong> adipiscing</p>
+                            <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
+                        </div>
+                        <!-- artical-info -->
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+            </div>*@
+
+    </div>
+</div>

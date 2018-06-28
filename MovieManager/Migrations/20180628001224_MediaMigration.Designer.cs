@@ -11,16 +11,17 @@ using System;
 namespace MovieManager.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    partial class MovieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180628001224_MediaMigration")]
+    partial class MediaMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.3-rtm-10026")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MovieManager.Models.Episode", b =>
+            modelBuilder.Entity("MovieManager.Models.Media", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
@@ -31,23 +32,9 @@ namespace MovieManager.Migrations
 
                     b.Property<int>("EpisodeNumber");
 
-                    b.Property<int>("MediaID");
-
                     b.Property<int>("Season");
 
                     b.Property<bool>("Seen");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("MediaID");
-
-                    b.ToTable("Episode");
-                });
-
-            modelBuilder.Entity("MovieManager.Models.Media", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("TvShow");
 
@@ -57,7 +44,7 @@ namespace MovieManager.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Medias");
+                    b.ToTable("Media");
                 });
 
             modelBuilder.Entity("MovieManager.Models.User", b =>
@@ -72,14 +59,6 @@ namespace MovieManager.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("MovieManager.Models.Episode", b =>
-                {
-                    b.HasOne("MovieManager.Models.Media", "Media")
-                        .WithMany("Episodes")
-                        .HasForeignKey("MediaID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MovieManager.Models.Media", b =>

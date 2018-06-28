@@ -4,6 +4,7 @@
     <link href="@Url.Content("~/css/loginPage.css")" rel="stylesheet" type="text/css" />
 }
 
+
 <div class="container">
     <div class="row">
         <form asp-controller="User" asp-action="Login" method="post" class="col-xs-12 col-sm-12 col-md-12">
@@ -19,8 +20,9 @@
                 <span asp-validation-for="Password"></span>
             </div>
             <div class="checkbox">
-                <label><input type="checkbox" name="remember"> <span>Remember me</span></label>
+                <span>Need an account? <a href="/User/register">Create one!</a></span>
             </div>
+            
             <button type="submit" class="btn btn-success">Login <i class="glyphicon glyphicon-send"></i></button>
         </form>
     </div>

@@ -8,34 +8,38 @@ using MovieManager.Data;
 using MovieManager.Models;
 using MovieManager.ViewModels;
 
+
 namespace MovieManager.Controllers
 {
+
+    
     public class UserController : Controller
     {
+        // Temporary to store user in session
+        public static Dictionary<string, string> session = new Dictionary<string, string>();
 
-        private MovieDbContext context;
+        private readonly MovieDbContext context;
 
         public UserController(MovieDbContext dbContext)
         {
             context = dbContext;
         }
 
+        public IActionResult Logout()
+        {
+            session.Remove("user");
+            return Redirect("/User/Login");
+        }
 
         public IActionResult Index()
         {
+            if (!session.ContainsKey("user"))
+            {
+                return Redirect("/User/Login");
+            }
+
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load("https://movieweb.com/movies/coming-soon/");
-
-            // Gets names
-            //HtmlNode[] node = doc.DocumentNode.SelectNodes("//div[@class='lister-item-content']/h3/a").ToArray();
-
-            //List<string> test = new List<string>();
-
-            //Gets link text
-            //foreach(var n in node)
-            //{
-            //   test.Add(n.Attributes["href"].Value);
-            //}
 
             //Get the first 4 image tags
             HtmlNode[] imgs = doc.DocumentNode.SelectNodes("//div[@class='new-movies-items']/section[@class='movie'][position()<5]/figure/a/img").ToArray();
@@ -123,6 +127,7 @@ namespace MovieManager.Controllers
 
                 context.Users.Add(newUser);
                 context.SaveChanges();
+                session.Add("user", registerUserViewModel.UserName);
 
                 return Redirect("/User");
             }
@@ -159,7 +164,9 @@ namespace MovieManager.Controllers
                 ViewBag.passwordError = "Incorrect password";
                 return View();
             }
-           
+
+            session.Add("user", loginUserViewModel.UserName);
+
 
             return Redirect("/User");
         }

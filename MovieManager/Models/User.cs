@@ -11,6 +11,7 @@ namespace MovieManager.Models
         public string UserName { get; set; }
         public string Password { get; set; }
 
+        public IList<Media> Medias { get; set; }
 
     }
 }
