@@ -1,4 +1,5 @@
-﻿@model IList<MovieManager.Models.Media>
+﻿@model MovieManager.ViewModels.MyShowsViewModel
+ 
 
 @section Styles {
     <link href="@Url.Content("~/css/mediaIndexPage.css")" rel="stylesheet" type="text/css" />
@@ -6,71 +7,115 @@
 
 
 <br />
+@*<p>@ViewBag.testing[@i].TvShow</p>*@
 
-@foreach(var s in @ViewBag.testing)
+
+@for(int i = 0; i < @Model.Medias.Count; i++)
 {
-    <p>@s</p>
-
-}
-
-
-<!-- content -->
-<div class="content">
-    <div class="container">
-        <!-- content-left -->
-        <div class="col-md-8 content-left">
-            <div class="artical">
-                <div class="col-md-4 artical-left">
-                    <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
-                </div>
-                <div class="col-md-8 artical-right">
-                    <div class="artical-head">
-                        <h2><a href="#">Lorem ipsum</a></h2>
-                        <a href="#"><span class="rate"> </span></a>
-                        <div class="clearfix"> </div>
-                    </div>
-                    <div class="clearfix"> </div>
-                    <!-- artical-info -->
-                    <div class="artical-info">
-                        <p><strong>Release Date:</strong>  March 20, 2014,</p>
-                        <p><strong>Reched:</strong>$250 million</p>
-                        <p><strong>Genre:</strong>pop</p>
-                        <p><strong>Country:</strong>UK</p>
-                        <p><strong>singer:</strong> adipiscing</p>
-                        <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
-                    </div>
-                    <!-- artical-info -->
-                </div>
-                <div class="clearfix"> </div>
-            </div>
-        </div>
-
-        @*<div class="col-md-8 content-left">
-                <div onclick="location.href='details.html';" class="artical">
+    <div class="content">
+        <div class="container">
+            <div class="col-md-8 content-left">
+                <div class="artical">
                     <div class="col-md-4 artical-left">
-                        <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
+                        @*<a href="#"><img src="images/post1.jpg" title="post-name" /></a>*@
                     </div>
+                    
                     <div class="col-md-8 artical-right">
                         <div class="artical-head">
-                            <h2><a href="#">Lorem ipsum</a></h2>
-                            <a href="#"><span class="rate"> </span></a>
+                            <h2>@Model.Medias[@i].TvShow</h2>
+                            <a href="/Media/Copy"><span class="rate">Copy all</span></a>
                             <div class="clearfix"> </div>
                         </div>
                         <div class="clearfix"> </div>
                         <!-- artical-info -->
                         <div class="artical-info">
-                            <p><strong>Release Date:</strong>  March 20, 2014,</p>
-                            <p><strong>Reched:</strong>$250 million</p>
-                            <p><strong>Genre:</strong>pop</p>
-                            <p><strong>Country:</strong>UK</p>
-                            <p><strong>singer:</strong> adipiscing</p>
-                            <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
+                            @foreach (var episode in Model.Medias[@i].Episodes)
+                            {
+                                @if (episode.Seen == false)
+                                {
+                                    <form method="post" action="/Media/SeenTvSeries/@episode.ID">
+                                        <p>
+                                            <strong>Season</strong> @episode.Season 
+                                            <strong> &emsp; Episode:</strong> @episode.EpisodeNumber 
+                                            <strong> &emsp; Air Date: </strong>  @episode.AirDate
+                                            <input class="addButton" type="submit" value="Seen" />
+                                        </p>
+                                    </form>
+                                }
+                            }
                         </div>
                         <!-- artical-info -->
                     </div>
                     <div class="clearfix"> </div>
                 </div>
-            </div>*@
-
+            </div>
+        </div>
     </div>
-</div>
+
+        
+    }
+
+
+
+            @*<!-- content -->
+            <div class="content">
+                <div class="container">
+                    <!-- content-left -->
+                    <div class="col-md-8 content-left">
+                        <div class="artical">
+                            <div class="col-md-4 artical-left">
+                                <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
+                            </div>
+                            <div class="col-md-8 artical-right">
+                                <div class="artical-head">
+                                    <h2>@ViewBag.testing[@i].TvShow</h2>
+                                    <a href="#"><span class="rate"> </span></a>
+                                    <div class="clearfix"> </div>
+                                </div>
+                                <div class="clearfix"> </div>
+                                <!-- artical-info -->
+                                <div class="artical-info">
+                                    <p><strong>Release Date:</strong>  March 20, 2014,</p>
+                                    <p><strong>Reched:</strong>$250 million</p>
+                                    <p><strong>Genre:</strong>pop</p>
+                                    <p><strong>Country:</strong>UK</p>
+                                    <p><strong>singer:</strong> adipiscing</p>
+                                    <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
+                                </div>
+                                <!-- artical-info -->
+                            </div>
+                            <div class="clearfix"> </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-8 content-left">
+                    <div onclick="location.href='details.html';" class="artical">
+                        <div class="col-md-4 artical-left">
+                            <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
+                        </div>
+                        <div class="col-md-8 artical-right">
+                            <div class="artical-head">
+                                <h2><a href="#">Lorem ipsum</a></h2>
+                                <a href="#"><span class="rate"> </span></a>
+                                <div class="clearfix"> </div>
+                            </div>
+                            <div class="clearfix"> </div>
+                            <!-- artical-info -->
+                            <div class="artical-info">
+                                <p><strong>Release Date:</strong>  March 20, 2014,</p>
+                                <p><strong>Reched:</strong>$250 million</p>
+                                <p><strong>Genre:</strong>pop</p>
+                                <p><strong>Country:</strong>UK</p>
+                                <p><strong>singer:</strong> adipiscing</p>
+                                <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
+                            </div>
+                            <!-- artical-info -->
+                        </div>
+                        <div class="clearfix"> </div>
+                    </div>
+                </div>
+
+                </div>
+            </div>*@

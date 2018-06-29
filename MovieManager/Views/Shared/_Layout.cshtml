@@ -9,6 +9,7 @@
     @RenderSection("Styles", false);
     <title>@ViewData["Title"] - MovieManager</title>
 
+
     @*<environment include="Development">
             <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
             <link rel="stylesheet" href="~/css/site.css" />
@@ -44,6 +45,7 @@
             </form>
         </div>
     </nav>
+    <span>@ViewBag.error</span>
     <div style="margin-top: 20px;" class="container body-content">
         @RenderBody()
         <hr />

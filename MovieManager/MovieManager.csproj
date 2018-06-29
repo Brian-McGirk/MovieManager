@@ -31,6 +31,12 @@
   <Reference Include="System.Web.HttpUtility">
     <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.Web.HttpUtility.dll</HintPath>
   </Reference>
+  <Reference Include="System.Windows">
+    <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.Windows.dll</HintPath>
+  </Reference>
+  <Reference Include="System.Windows.Forms">
+    <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\Framework\v2.0.50727\System.Windows.Forms.dll</HintPath>
+  </Reference>
 </ItemGroup>
 
 </Project>

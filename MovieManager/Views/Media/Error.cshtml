@@ -1,0 +1,18 @@
+﻿@section Styles {
+    <link href="@Url.Content("~/css/errorPage.css")" rel="stylesheet" type="text/css" />
+}
+
+    <div class="main">
+        <h1>@ViewBag.error</h1>
+        <div class="w3_agile_main_grid">
+            <h2>ERROR</h2>
+            <p>Oooooops! Looks like that show is already in your list.</p>
+            <form asp-controller="Media" asp-action="Search" method="post" class="agile_form">
+                <input type="text" name="searchTerm" placeholder="Type here to try again">
+                <input type="submit" value="Send">
+            </form>
+                <div class="clear"> </div>
+            </div>
+        </div>
+        
+    
