@@ -24,8 +24,8 @@ namespace MovieManager.Controllers
         static async Task SendSms(string phoneNUmber)
         {
           
-            const string accountSid = "ACfb84be2d03c90ce9ca64b3ee363adda9";
-            const string authToken = "da0c17f77df08e1dc22a5cf01d882358";
+            const string accountSid = "";
+            const string authToken = "";
 
             TwilioClient.Init(accountSid, authToken);
             
