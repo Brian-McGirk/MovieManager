@@ -2,13 +2,20 @@
     <link href="@Url.Content("~/css/userIndexPage.css")" rel="stylesheet" type="text/css" />
 }
 
-
+<script>
+    function hideJumbo() {
+        $("#jumbo").click(function () {
+            $(".collapse").collapse('hide');
+        });
+}
+</script>
 
 <!-- Page Content -->
     <div class="container">
 
         <!-- Jumbotron Header -->
-        <header class="jumbotron my-4">
+
+        <header id="jumbo" class="jumbotron my-4 collapse in" onclick="hideJumbo()">
             <h1 class="display-3">Welcome to Movie Manager</h1>
             <p class="lead">Movie Manager is a simple to use, yet customizable, movie manager. It allows you to view new movies and recent tv show episodes that you may not have seen yet. Info is automatically retrieved from MovieWeb.com, IMDb.com, and Wikipedia.org.</p>
             @*<a href="#" class="btn btn-primary btn-lg">Call to action!</a>*@

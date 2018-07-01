@@ -1,29 +1,39 @@
 ﻿@model MovieManager.ViewModels.MyShowsViewModel
- 
+
 
 @section Styles {
     <link href="@Url.Content("~/css/mediaIndexPage.css")" rel="stylesheet" type="text/css" />
 }
 
+<script>
+    function copyFunction(text) {
+        var copyText = document.getElementById(text);
+        copyText.select();
+        document.execCommand("copy");
+    }
+</script>
 
 <br />
-@*<p>@ViewBag.testing[@i].TvShow</p>*@
 
+@if(@Model.Medias.Count == 0)
+{
+<p>Please add some tv shows you would like to track!</p>
+}
 
-@for(int i = 0; i < @Model.Medias.Count; i++)
+@for (int i = 0; i < @Model.Medias.Count; i++)
 {
     <div class="content">
         <div class="container">
             <div class="col-md-8 content-left">
                 <div class="artical">
-                    <div class="col-md-4 artical-left">
-                        @*<a href="#"><img src="images/post1.jpg" title="post-name" /></a>*@
-                    </div>
-                    
+                    @*<div class="col-md-4 artical-left">
+                            <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
+                        </div>*@
+
                     <div class="col-md-8 artical-right">
                         <div class="artical-head">
                             <h2>@Model.Medias[@i].TvShow</h2>
-                            <a href="/Media/Copy"><span class="rate">Copy all</span></a>
+                            @*<a href="/Media/Copy"><span class="rate">Copy all</span></a>*@
                             <div class="clearfix"> </div>
                         </div>
                         <div class="clearfix"> </div>
@@ -31,14 +41,68 @@
                         <div class="artical-info">
                             @foreach (var episode in Model.Medias[@i].Episodes)
                             {
+                                @*<h3>@Int32.Parse(episode.AirDate.Substring(0, 4)) @Model.dateYear</h3>
+                                <h3>@Int32.Parse(episode.AirDate.Substring(5, 2)) @Model.dateMonth</h3>
+                                <h3>@Int32.Parse(episode.AirDate.Substring(8, 2)) @Model.dateDay</h3>*@
                                 @if (episode.Seen == false)
                                 {
                                     <form method="post" action="/Media/SeenTvSeries/@episode.ID">
                                         <p>
-                                            <strong>Season</strong> @episode.Season 
-                                            <strong> &emsp; Episode:</strong> @episode.EpisodeNumber 
-                                            <strong> &emsp; Air Date: </strong>  @episode.AirDate
-                                            <input class="addButton" type="submit" value="Seen" />
+                                            @if (Int32.Parse(episode.AirDate.Substring(0, 4)) < Model.dateYear || (Int32.Parse(episode.AirDate.Substring(0, 4)) == Model.dateYear && Int32.Parse(episode.AirDate.Substring(5, 2)) < Model.dateMonth))
+                                            {
+                                                <strong class="out">Season</strong><span class="out">@episode.Season</span>
+                                                <strong class="out"> &emsp; Episode:</strong> <span class="out">@episode.EpisodeNumber</span>
+                                                <strong class="out"> &emsp; Air Date: </strong> <span class="out">@episode.AirDate</span>
+                                                <input class="addButton" type="submit" value="Seen" />
+                                                <br />
+
+                                            }
+                                            else if (Int32.Parse(episode.AirDate.Substring(0, 4)) > Model.dateYear || (Int32.Parse(episode.AirDate.Substring(5, 2)) == Model.dateMonth && Int32.Parse(episode.AirDate.Substring(8, 2)) > Model.dateDay))
+                                            {
+                                                <strong class="notOut">Season</strong><span class="notOut">@episode.Season</span>
+                                                <strong class="notOut"> &emsp; Episode:</strong> <span class="notOut">@episode.EpisodeNumber</span>
+                                                <strong class="notOut"> &emsp; Air Date: </strong> <span class="notOut">@episode.AirDate</span>
+                                                <input class="addButton" type="submit" value="Seen" />
+                                                <br />
+                                            }
+                                            else
+                                            {
+                                                <strong class="notOut">Season</strong><span class="notOut">@episode.Season</span>
+                                                <strong class="notOut"> &emsp; Episode:</strong> <span class="notOut">@episode.EpisodeNumber</span>
+                                                <strong class="notOut"> &emsp; Air Date: </strong> <span class="notOut">@episode.AirDate</span>
+                                                <input class="addButton" type="submit" value="Seen" />
+                                                <br />
+
+                                            }
+
+                                            @if (@episode.Season.ToString().Length == 1 && @episode.EpisodeNumber.ToString().Length == 1)
+                                            {
+
+                                                <input class="showToCopyText" type="text" id="@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())" value='@Model.Medias[@i].TvShow s0@(episode.Season.ToString())e0@(episode.EpisodeNumber.ToString())' />
+                                                <button type="button" class="showToCopyButton" id="" onclick="copyFunction('@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())')">Copy</button>
+
+                                            }
+                                            @if (@episode.Season.ToString().Length == 1 && @episode.EpisodeNumber.ToString().Length == 2)
+                                            {
+
+                                                <input class="showToCopyText" type="text" id="@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())" value='@Model.Medias[@i].TvShow s0@(episode.Season.ToString())e@(episode.EpisodeNumber.ToString())' />
+                                                <button type="button" class="showToCopyButton" id="" onclick="copyFunction('@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())')">Copy</button>
+
+                                            }
+                                            @if (@episode.Season.ToString().Length == 2 && @episode.EpisodeNumber.ToString().Length == 1)
+                                            {
+
+                                                <input class="showToCopyText" type="text" id="@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())" value='@Model.Medias[@i].TvShow s@(episode.Season.ToString())e0@(episode.EpisodeNumber.ToString())' />
+                                                <button type="button" class="showToCopyButton" id="" onclick="copyFunction('@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())')">Copy</button>
+
+                                            }
+                                            @if (@episode.Season.ToString().Length == 2 && @episode.EpisodeNumber.ToString().Length == 2)
+                                            {
+
+                                                <input class="showToCopyText" type="text" id="@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())" value='@Model.Medias[@i].TvShow s@(episode.Season.ToString())e@(episode.EpisodeNumber.ToString())' />
+                                                <button type="button" class="showToCopyButton" id="" onclick="copyFunction('@(episode.Season.ToString())@(episode.EpisodeNumber.ToString())')">Copy</button>
+
+                                            }
                                         </p>
                                     </form>
                                 }
@@ -52,70 +116,69 @@
         </div>
     </div>
 
-        
-    }
+}
 
 
 
-            @*<!-- content -->
-            <div class="content">
-                <div class="container">
-                    <!-- content-left -->
-                    <div class="col-md-8 content-left">
-                        <div class="artical">
-                            <div class="col-md-4 artical-left">
-                                <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
-                            </div>
-                            <div class="col-md-8 artical-right">
-                                <div class="artical-head">
-                                    <h2>@ViewBag.testing[@i].TvShow</h2>
-                                    <a href="#"><span class="rate"> </span></a>
-                                    <div class="clearfix"> </div>
-                                </div>
-                                <div class="clearfix"> </div>
-                                <!-- artical-info -->
-                                <div class="artical-info">
-                                    <p><strong>Release Date:</strong>  March 20, 2014,</p>
-                                    <p><strong>Reched:</strong>$250 million</p>
-                                    <p><strong>Genre:</strong>pop</p>
-                                    <p><strong>Country:</strong>UK</p>
-                                    <p><strong>singer:</strong> adipiscing</p>
-                                    <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
-                                </div>
-                                <!-- artical-info -->
-                            </div>
-                            <div class="clearfix"> </div>
-                        </div>
+@*<!-- content -->
+    <div class="content">
+        <div class="container">
+            <!-- content-left -->
+            <div class="col-md-8 content-left">
+                <div class="artical">
+                    <div class="col-md-4 artical-left">
+                        <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
                     </div>
-
-
-
-                    <div class="col-md-8 content-left">
-                    <div onclick="location.href='details.html';" class="artical">
-                        <div class="col-md-4 artical-left">
-                            <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
-                        </div>
-                        <div class="col-md-8 artical-right">
-                            <div class="artical-head">
-                                <h2><a href="#">Lorem ipsum</a></h2>
-                                <a href="#"><span class="rate"> </span></a>
-                                <div class="clearfix"> </div>
-                            </div>
+                    <div class="col-md-8 artical-right">
+                        <div class="artical-head">
+                            <h2>@ViewBag.testing[@i].TvShow</h2>
+                            <a href="#"><span class="rate"> </span></a>
                             <div class="clearfix"> </div>
-                            <!-- artical-info -->
-                            <div class="artical-info">
-                                <p><strong>Release Date:</strong>  March 20, 2014,</p>
-                                <p><strong>Reched:</strong>$250 million</p>
-                                <p><strong>Genre:</strong>pop</p>
-                                <p><strong>Country:</strong>UK</p>
-                                <p><strong>singer:</strong> adipiscing</p>
-                                <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
-                            </div>
-                            <!-- artical-info -->
                         </div>
                         <div class="clearfix"> </div>
+                        <!-- artical-info -->
+                        <div class="artical-info">
+                            <p><strong>Release Date:</strong>  March 20, 2014,</p>
+                            <p><strong>Reched:</strong>$250 million</p>
+                            <p><strong>Genre:</strong>pop</p>
+                            <p><strong>Country:</strong>UK</p>
+                            <p><strong>singer:</strong> adipiscing</p>
+                            <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
+                        </div>
+                        <!-- artical-info -->
                     </div>
+                    <div class="clearfix"> </div>
                 </div>
+            </div>
 
+
+
+            <div class="col-md-8 content-left">
+            <div onclick="location.href='details.html';" class="artical">
+                <div class="col-md-4 artical-left">
+                    <a href="#"><img src="images/post1.jpg" title="post-name" /></a>
                 </div>
-            </div>*@
+                <div class="col-md-8 artical-right">
+                    <div class="artical-head">
+                        <h2><a href="#">Lorem ipsum</a></h2>
+                        <a href="#"><span class="rate"> </span></a>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="clearfix"> </div>
+                    <!-- artical-info -->
+                    <div class="artical-info">
+                        <p><strong>Release Date:</strong>  March 20, 2014,</p>
+                        <p><strong>Reched:</strong>$250 million</p>
+                        <p><strong>Genre:</strong>pop</p>
+                        <p><strong>Country:</strong>UK</p>
+                        <p><strong>singer:</strong> adipiscing</p>
+                        <p><strong>casting:</strong> <a href="#">Donec</a>,<a href="#">variu</a>,<a href="#">mauris</a>,<a href="#">sociis</a></p>
+                    </div>
+                    <!-- artical-info -->
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        </div>
+
+        </div>
+    </div>*@

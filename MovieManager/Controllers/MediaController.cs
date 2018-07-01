@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieManager.Data;
 using MovieManager.Models;
 using MovieManager.ViewModels;
-using System.Windows.Forms;
 
 namespace MovieManager.Controllers
 {
@@ -23,29 +23,91 @@ namespace MovieManager.Controllers
             context = dbContext;
         }
 
-        
+        public static List<Media> mediaToText = new List<Media>();
+         
         public IActionResult Index()
         {
-            //if (!UserController.session.ContainsKey("user"))
-            //{
-            //    return Redirect("/User/Login");
-            //}
+            if (!UserController.session.ContainsKey("user"))
+            {
+                return Redirect("/User/Login");
+            }
 
-            // TODO Display all of the users TV Shows along with the episodes they haven't watched
-            //IList<Media> Medias = context.Medias.Include(u => u.User).ToList();
+            DateTime thisDay = DateTime.Today;
+
+            string dateString = thisDay.ToString("d");
+
+            int index = dateString.IndexOf("/");
+
+            string dateMonthString = dateString.Substring(0, index);
+            string dateDayString = dateString.Substring(index + 1, 2);
+
+            if (dateDayString.Contains("/"))
+            {
+                dateDayString = dateString.Substring(index + 1, 1);
+            }
+
+            int lastIndex = dateString.LastIndexOf("/");
+
+            int dateMonth = Int32.Parse(dateMonthString);
+            int dateDay = Int32.Parse(dateDayString);
+            int dateYear = Int32.Parse(dateString.Substring(lastIndex + 1, 4));
 
             User user = context.Users.Include(m => m.Medias).ThenInclude(e => e.Episodes).Single(u => u.UserName == UserController.session["user"]);
             List<Media> medias = user.Medias.ToList();
 
-           
+            List<Media> mediasToDisplay = new List<Media>();
+            
+             
+            bool allSeen = true;
 
+            foreach(Media media in medias)
+            {
+                foreach(Episode episode in media.Episodes)
+                {
+                    if (!UserController.notifiedNames.Contains(media.TvShow + " Season " + episode.Season + " Episode " + episode.EpisodeNumber + " is ready to be watched!"))
+                    {
+                        if (Int32.Parse(episode.AirDate.Substring(0, 4)) == dateYear && Int32.Parse(episode.AirDate.Substring(5, 2)) == dateMonth && (Int32.Parse(episode.AirDate.Substring(8, 2)) == dateDay || Int32.Parse(episode.AirDate.Substring(8, 2)) == dateDay + 1))
+                        {
+                            mediaToText.Add(media);
+                        }
+                    }
+                    
 
+                    if (!episode.Seen)
+                    {
+                        allSeen = false;
+                        break;
+                    }
+                    //Int32.Parse(episode.AirDate.Substring(0, 4)) > Model.dateYear || (Int32.Parse(episode.AirDate.Substring(5, 2))
+                    //  == Model.dateMonth && Int32.Parse(episode.AirDate.Substring(8, 2)) > Model.dateDay)
+                    //System.Diagnostics.Debug.WriteLine("TODAYS STUFF:: " + dateYear + "---" + dateMonth + "---" + dateDay);
+                   // System.Diagnostics.Debug.WriteLine("EPISODE STUFF:: " + Int32.Parse(episode.AirDate.Substring(0, 4)) + "---" + Int32.Parse(episode.AirDate.Substring(5, 2)) + "---" + Int32.Parse(episode.AirDate.Substring(8, 2)));
+                   
+                }
+
+                if (!allSeen)
+                {
+                    mediasToDisplay.Add(media);
+                    allSeen = true;
+                }
+
+            }
+            
             MyShowsViewModel myShowsViewModel = new MyShowsViewModel
             {
-                Medias = user.Medias.ToList(),
-            };
-            
+                Medias = mediasToDisplay,
+                dateMonth = dateMonth,
+                dateDay = dateDay,
+                dateYear = dateYear
 
+            };
+
+
+
+            if (mediaToText.Count != 0)
+            {
+                return Redirect("/User/SendText");
+            }
 
             return View(myShowsViewModel);
         }
@@ -62,53 +124,53 @@ namespace MovieManager.Controllers
             return Redirect("/Media");
         }
 
-        public IActionResult Copy(KeyEventArgs e)
+        public IActionResult Copy(int id)
         {
-            User user = context.Users.Include(m => m.Medias).ThenInclude(ep => ep.Episodes).Single(u => u.UserName == UserController.session["user"]);
+            //User user = context.Users.Include(m => m.Medias).ThenInclude(ep => ep.Episodes).Single(u => u.UserName == UserController.session["user"]);
 
-            List<Media> medias = user.Medias.ToList();
+            //List<Media> medias = user.Medias.ToList();
 
-            List<string> toCopy = new List<string>();
+            //Episode episode = context.Episodes.Single(e => e.ID == id);
 
 
-            foreach (Media media in medias)
-            {
-                foreach (Episode episode in media.Episodes)
-                {
+            //foreach (Media media in medias)
+            //{
+            //    foreach (Episode episode in media.Episodes)
+            //    {
 
-                    //if (!episode.Seen)
-                    //{
-                    //    if (episode.Season.ToString().Length == 1 && episode.EpisodeNumber.ToString().Length == 1)
-                    //    {
-                    //        toCopy.Add(media.TvShow + "s0" + episode.Season.ToString() + "e0" + episode.EpisodeNumber.ToString());
-                    //    }
-                    //    else if (episode.Season.ToString().Length == 1 && episode.EpisodeNumber.ToString().Length == 2)
-                    //    {
-                    //        toCopy.Add(media.TvShow + "s0" + episode.Season.ToString() + "e" + episode.EpisodeNumber.ToString());
-                    //    }
-                    //    else if (episode.Season.ToString().Length == 2 && episode.EpisodeNumber.ToString().Length == 1)
-                    //    {
-                    //        toCopy.Add(media.TvShow + "s" + episode.Season.ToString() + "e0" + episode.EpisodeNumber.ToString());
-                    //    }
-                    //    else if (episode.Season.ToString().Length == 2 && episode.EpisodeNumber.ToString().Length == 2)
-                    //    {
-                    //        toCopy.Add(media.TvShow + "s" + episode.Season.ToString() + "e" + episode.EpisodeNumber.ToString());
-                    //    }
-                    //}
-                    // TODO copy to clipboard based on seen status and date
-                }
-            }
-                    //keyEvent.KeyCode == Keys.ControlKey &&
-                    //if (keyEvent.KeyCode == Keys.V)
-                    //{
-                    //    pasted = true;
-                    //}
+            //if (!episode.Seen)
+            //{
+            //if (episode.Season.ToString().Length == 1 && episode.EpisodeNumber.ToString().Length == 1)
+            //{
+            //    Clipboard.SetText(media.TvShow + "s0" + episode.Season.ToString() + "e0" + episode.EpisodeNumber.ToString());
+            //}
+            //else if (episode.Season.ToString().Length == 1 && episode.EpisodeNumber.ToString().Length == 2)
+            //{
+            //    Clipboard.SetText(media.TvShow + "s0" + episode.Season.ToString() + "e" + episode.EpisodeNumber.ToString());
+            //}
+            //else if (episode.Season.ToString().Length == 2 && episode.EpisodeNumber.ToString().Length == 1)
+            //{
+            //    Clipboard.SetText(media.TvShow + "s" + episode.Season.ToString() + "e0" + episode.EpisodeNumber.ToString());
+            //}
+            //else if (episode.Season.ToString().Length == 2 && episode.EpisodeNumber.ToString().Length == 2)
+            //{
+            //    Clipboard.SetText(media.TvShow + "s" + episode.Season.ToString() + "e" + episode.EpisodeNumber.ToString());
+            //}
+            //}
+            // TODO copy to clipboard based on seen status and date
+            //    }
+            //}
+            //keyEvent.KeyCode == Keys.ControlKey &&
+            //if (keyEvent.KeyCode == Keys.V)
+            //{
+            //    pasted = true;
+            //}
 
-                
-                
-                
-            
-            
+
+
+
+
+
 
             //DateTime thisDay = DateTime.Today;
 
@@ -180,7 +242,15 @@ namespace MovieManager.Controllers
 
             foreach(string s in searchTermSplit)
             {
-                searchTermCapital += s.Substring(0, 1).ToUpper() + s.Substring(1) + " ";
+                if (!s.ToLower().Equals("of"))
+                {
+                    searchTermCapital += s.Substring(0, 1).ToUpper() + s.Substring(1) + " ";
+                }
+                else
+                {
+                    searchTermCapital += s.ToLower() + " ";
+                }
+                
             }
 
             searchTermSplit = searchTermCapital.Split(' ');
@@ -190,8 +260,11 @@ namespace MovieManager.Controllers
             HtmlWeb web = new HtmlWeb();
             HtmlAgilityPack.HtmlDocument doc = web.Load("https://en.wikipedia.org/wiki/List_of_" + searchTermJoined + "episodes");
 
-            HtmlNode[] seasonsNode = doc.DocumentNode.SelectNodes("//div[@class='mw-parser-output']/h3").ToArray();
+            
 
+            HtmlNode[] seasonsNode = doc.DocumentNode.SelectNodes("//div[@class='mw-parser-output']/h3").ToArray();
+            // For testing
+            System.Diagnostics.Debug.WriteLine("SEASON NODE LENGTH" + seasonsNode.Length);
 
             //List<string> seasons = new List<string>();
             //List<string> episodes = new List<string>();
@@ -207,7 +280,7 @@ namespace MovieManager.Controllers
 
             //}
 
-           // Media newMediaTvShow = context.Medias.Single(m => m.TvShow == searchTermCapital);
+            // Media newMediaTvShow = context.Medias.Single(m => m.TvShow == searchTermCapital);
             User newUser = context.Users.Single(u => u.UserName == UserController.session["user"]);
 
             Media isMedia = context.Medias.FirstOrDefault(m => m.TvShow == searchTermCapital);
@@ -229,9 +302,9 @@ namespace MovieManager.Controllers
                 ViewBag.error = searchTermCapital + " is already in your list";
                 return View("Error");
             }
-            
 
-           
+
+
 
 
             //Media newMedia = new Media
@@ -250,22 +323,44 @@ namespace MovieManager.Controllers
                 foreach (HtmlNode season in seasonsNode)
                 {
                     int index = season.InnerText.IndexOf("(");
+                
+                if (index < 0)
+                {
+                    break;
+                }
+                
+                if (!seasons.Contains(season.InnerText.Substring(0, index)))
+                {
+                        seasons.Add(season.InnerText.Substring(0, index + 1));
+                }
+                else
+                {
+                    break;
+                }
 
-                    if (!seasons.Contains(season.InnerText.Substring(0, index)))
-                    {
-                        seasons.Add(season.InnerText.Substring(0, index));
-                    }
+                System.Diagnostics.Debug.WriteLine("SEASON TEXT::" + season.InnerText.Substring(0, 6));
+                if (season.InnerText.ToLower().Substring(0, 6) != "season")
+                {
+                    break;
+                }
+
                     int episodeNumberCounter = 1;
-
-                    HtmlNode[] episodesNode = doc.DocumentNode.SelectNodes("//div[@class='mw-parser-output']/table[" + (Int32.Parse(season.InnerText.Substring(7, 1)) + 1) + "]/tr[@class='vevent']").ToArray();
+                
+                
+                HtmlNode[] episodesNode = doc.DocumentNode.SelectNodes("//div[@class='mw-parser-output']/table[" + (Int32.Parse(season.InnerText.Substring(7, 1)) + 1) + "]/tr[@class='vevent']").ToArray();
                     foreach (HtmlNode episode in episodesNode)
                     {
 
 
                         int firstIndex = episode.InnerText.IndexOf("\"");
                         int lastIndex = episode.InnerText.LastIndexOf("\"");
+                    
+                    if (lastIndex < 0)
+                    {
+                        break;
+                    }
 
-                        int finalIndex = episode.InnerText.Substring(firstIndex + 1, lastIndex).IndexOf("\"");
+                    int finalIndex = episode.InnerText.Substring(firstIndex + 1, lastIndex).IndexOf("\"");
 
                         episodes.Add(episode.InnerText.Substring(firstIndex + 1, finalIndex));
 

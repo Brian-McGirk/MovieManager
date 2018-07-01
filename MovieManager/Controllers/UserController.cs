@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using MovieManager.Data;
 using MovieManager.Models;
 using MovieManager.ViewModels;
-
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace MovieManager.Controllers
 {
@@ -17,6 +18,97 @@ namespace MovieManager.Controllers
     {
         // Temporary to store user in session
         public static Dictionary<string, string> session = new Dictionary<string, string>();
+
+        public static List<string> notifiedNames= new List<string>();
+
+        static async Task SendSms(string phoneNUmber)
+        {
+          
+            const string accountSid = "ACfb84be2d03c90ce9ca64b3ee363adda9";
+            const string authToken = "da0c17f77df08e1dc22a5cf01d882358";
+
+            TwilioClient.Init(accountSid, authToken);
+            
+            List<Media> medias = MediaController.mediaToText;
+
+            DateTime thisDay = DateTime.Today;
+
+            string dateString = thisDay.ToString("d");
+
+            int index = dateString.IndexOf("/");
+
+            string dateMonthString = dateString.Substring(0, index);
+            string dateDayString = dateString.Substring(index + 1, 2);
+
+            if (dateDayString.Contains("/"))
+            {
+                dateDayString = dateString.Substring(index + 1, 1);
+            }
+
+            int lastIndex = dateString.LastIndexOf("/");
+
+            int dateMonth = Int32.Parse(dateMonthString);
+            int dateDay = Int32.Parse(dateDayString);
+            int dateYear = Int32.Parse(dateString.Substring(lastIndex + 1, 4));
+
+            foreach (Media media in medias)
+            {
+                foreach (Episode episode in media.Episodes)
+                {
+                    if (notifiedNames.Contains(media.TvShow + " Season " + episode.Season + " Episode " + episode.EpisodeNumber + " is ready to be watched!"))
+                    {
+                        break;
+                    }
+
+                    if (Int32.Parse(episode.AirDate.Substring(0, 4)) == dateYear && Int32.Parse(episode.AirDate.Substring(5, 2)) == dateMonth && (Int32.Parse(episode.AirDate.Substring(8, 2)) == dateDay || Int32.Parse(episode.AirDate.Substring(8, 2)) == dateDay + 1))
+                        {
+                            
+                            notifiedNames.Add(media.TvShow + " Season " + episode.Season + " Episode " + episode.EpisodeNumber + " is ready to be watched!");
+
+                            var message = await MessageResource.CreateAsync(
+                            body: media.TvShow + " Season " + episode.Season + " Episode " + episode.EpisodeNumber + " is ready to be watched!",
+                            from: new Twilio.Types.PhoneNumber("+13145825488"),
+                            to: new Twilio.Types.PhoneNumber("+1" + phoneNUmber)
+                            );
+                            
+                        }
+                    
+                    
+                }
+            }
+
+                
+        }
+
+        public IActionResult SetDate()
+        {
+            Episode episode = context.Episodes.First(e => e.ID == 1);
+            
+            episode.AirDate = "2018-07-01";
+            context.SaveChanges();
+
+            return Redirect("/User");
+        }
+
+        public IActionResult SendText()
+        {
+            User user = context.Users.Single(u => u.UserName == UserController.session["user"]);
+            string phoneNumber = user.PhoneNumber;
+
+            if (phoneNumber.Contains("-"))
+            {
+                phoneNumber = phoneNumber.Replace("-", "");
+            }
+
+            if(phoneNumber.Substring(0,1) == "1")
+            {
+                phoneNumber = phoneNumber.Substring(1);
+            }
+            
+            SendSms(phoneNumber).Wait();
+            MediaController.mediaToText.Clear();
+            return Redirect("/Media");
+        }
 
         private readonly MovieDbContext context;
 
@@ -83,14 +175,13 @@ namespace MovieManager.Controllers
             {
                 releaseDate.Add(rd.InnerText);
             }
-
-
+            
             ViewBag.href = href;
             ViewBag.title = title;
             ViewBag.description = description;
             ViewBag.link = link;
             ViewBag.releaseDate = releaseDate;
-
+            
             return View();
         }
 
@@ -168,6 +259,30 @@ namespace MovieManager.Controllers
             session.Add("user", loginUserViewModel.UserName);
 
 
+            return Redirect("/User");
+        }
+
+        public IActionResult Settings()
+        {
+            if (!session.ContainsKey("user"))
+            {
+                return Redirect("/User/Login");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Settings(string phoneNumber)
+        {
+            
+
+            User user = context.Users.Single(u => u.UserName == UserController.session["user"]);
+            
+            user.PhoneNumber = phoneNumber;
+            
+            context.SaveChanges();
+            
             return Redirect("/User");
         }
 
